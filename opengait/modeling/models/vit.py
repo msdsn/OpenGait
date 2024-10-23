@@ -25,7 +25,7 @@ class Vit(BaseModel):
             
 
         del ipts
-        x = sils.reshape(-1, 1, 64, 64)
+        x = sils.reshape(-1, 1, 64, 44)
         outs = self.Backbone(x)  # [n, c, s, h, w]
         print(f"""
 
@@ -59,7 +59,7 @@ class VisionTransformerB16(VisionTransformer):
     def __init__(
         self,
         image_size: int = 64,
-        patch_size: int = 16,
+        patch_size: int = 4,
         num_layers: int = 12,
         num_heads: int = 12,
         hidden_dim: int = 768,
