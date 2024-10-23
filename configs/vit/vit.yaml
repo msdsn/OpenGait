@@ -32,7 +32,7 @@ loss_cfg:
     log_accuracy: true
 
 model_cfg:
-  model: Baseline
+  model: Vit
   backbone_cfg:
     type: Vit
     block: BasicBlock
