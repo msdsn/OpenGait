@@ -36,6 +36,13 @@ class Baseline(BaseModel):
         embed_2, logits = self.BNNecks(embed_1)  # [n, c, p]
         embed = embed_1
 
+        print(f"""
+
+        sils: {sils.shape}
+        outs.triplet: {embed_1.shape}
+        outs.softmax: {logits.shape}
+        """)
+
         retval = {
             'training_feat': {
                 'triplet': {'embeddings': embed_1, 'labels': labs},
