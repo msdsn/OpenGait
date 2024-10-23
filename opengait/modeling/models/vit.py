@@ -27,13 +27,6 @@ class Vit(BaseModel):
         del ipts
         x = sils.reshape(-1, 1, 64, 64)
         outs = self.Backbone(x)  # [n, c, s, h, w]
-        print(f"""
-
-        sils: {sils.shape}
-        x: {x.shape}
-        outs.triplet: {outs['triplet'].shape}
-        outs.softmax: {outs['softmax'].shape}
-        """)
 
 
         retval = {

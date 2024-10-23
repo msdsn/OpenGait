@@ -48,7 +48,7 @@ def run_model(cfgs, training):
         model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
     if cfgs['trainer_cfg']['fix_BN']:
         model.fix_BN()
-    model = get_ddp_module(model, cfgs['trainer_cfg']['find_unused_parameters'])
+    model = get_ddp_module(model, True)#cfgs['trainer_cfg']['find_unused_parameters'])
     msg_mgr.log_info(params_count(model))
     msg_mgr.log_info("Model Initialization Finished!")
 
