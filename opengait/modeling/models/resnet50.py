@@ -34,7 +34,7 @@ class ResNet50Backbone(ResNet):
         x = self.layer4(x) # torch.Size([1920, 512, 16, 16]) (n*s, c=512, h, w)
         x = x.reshape(-1, 30, 512, 16, 16).transpose(1, 2).contiguous() # (n, c, s, h, w) = torch.Size([64, 512, 30, 16, 16]),
 
-        x = torch.max(x, dim=2) # (n, c, h, w) = torch.Size([64, 512, 16, 16]) butun pikseller için framelerdeki max nokta
+        x = torch.max(x, dim=2)[0] # (n, c, h, w) = torch.Size([64, 512, 16, 16]) butun pikseller için framelerdeki max nokta
     
         return x
 
