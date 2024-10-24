@@ -17,6 +17,7 @@ class Baseline(BaseModel):
 
     def forward(self, inputs):
         ipts, labs, _, _, seqL = inputs
+        print(f"ipts: {ipts.size()}")
 
         sils = ipts[0]
         if len(sils.size()) == 4:
