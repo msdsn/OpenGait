@@ -103,6 +103,7 @@ class VisionTransformerB16(VisionTransformer):
         return x
 
     def forward(self, x: torch.Tensor):
+        print(f"incoming x.shape: {x.shape}")
         # Reshape and permute the input tensor
         # [1920, 1, 64, 64] -> [1920, 16, 768] (h/patch_size)=4  (dikey parca*yatay parca)=16 hidden_dim=768
         x = self._process_input(x)
