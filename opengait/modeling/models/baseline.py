@@ -20,7 +20,6 @@ class Baseline(BaseModel):
         
 
         sils = ipts[0]
-        print(f"sils: {sils.size()}")
         if len(sils.size()) == 4:
             sils = sils.unsqueeze(1)
         else:
