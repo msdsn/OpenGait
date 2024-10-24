@@ -106,15 +106,20 @@ class VisionTransformerB16(VisionTransformer):
         # Reshape and permute the input tensor
         # [1920, 1, 64, 64] -> [1920, 16, 768] (h/patch_size)=4  (dikey parca*yatay parca)=16 hidden_dim=768
         x = self._process_input(x)
+        print(f"x.shape after _process_input: {x.shape}")
         n = x.shape[0] # 1920
 
         # Expand the class token to the full batch
         batch_class_token = self.class_token.expand(n, -1, -1) # [1920, 1, 768] her sample icin class token
         x = torch.cat([batch_class_token, x], dim=1) # [1920, 16, 768] -> [1920, 17, 768]
+        print(f"x.shape after cat: {x.shape}")
         x = self.encoder(x) # [1920, 17, 768]
+        print(f"x.shape after encoder: {x.shape}")
         x = x[:, 1:] # [1920, 16, 768]
+        print(f"x.shape after slicing: {x.shape}")
         # [n, p, c] -> [n, c, p]
         x = x.permute(0, 2, 1).contiguous() # [n, c=768, p]
+        print(f"x.shape after permute: {x.shape}")
         x = x.reshape(-1, 30, x.size()[1], 16).transpose(1, 2).contiguous() # (n, c, s, p) = torch.Size([64, 768, 30, 16]),
         x = torch.max(x, dim=2)[0] # (n, c, p) = torch.Size([64, 768, 16]) butun pikseller için framelerdeki max nokta
         embed = self.FCs(x)  # [n, c=256, p]
