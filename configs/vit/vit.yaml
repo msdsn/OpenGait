@@ -75,9 +75,9 @@ optimizer_cfg:
 scheduler_cfg:
   gamma: 0.1
   milestones: # Learning Rate Reduction at each milestones
-    - 2000
-    - 4000
     - 5000
+    - 10000
+    - 15000
   scheduler: MultiStepLR
 trainer_cfg:
   enable_float16: true # half_percesion float for memory reduction and speedup
@@ -86,10 +86,10 @@ trainer_cfg:
   log_iter: 100
   restore_ckpt_strict: true
   restore_hint: 0
-  save_iter: 8000
+  save_iter: 20000
   save_name: GaitBase_DA
   sync_BN: true
-  total_iter: 8000
+  total_iter: 20000
   sampler:
     batch_shuffle: true
     batch_size:
