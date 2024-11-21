@@ -15,7 +15,7 @@ class BaseAttention(BaseModel):
         self.Backbone = self.get_backbone(model_cfg['backbone_cfg'])
         self.Backbone = SetBlockWrapper(self.Backbone)
         
-        self.conv_reduce = nn.Conv2d(512, 128, kernel_size=2, stride=2, padding=0, bias=False)
+        self.conv_reduce = nn.Conv2d(512, 128, kernel_size=4, stride=4, padding=0, bias=False)
         self.encoder = Encoder(**model_cfg['Encoder'])
         self.class_token = nn.Parameter(torch.zeros(1, 1, 128))
         self.conv_expand = nn.Conv2d(128, 512, kernel_size=1, stride=1, padding=0, bias=False)
@@ -52,7 +52,7 @@ class BaseAttention(BaseModel):
         x1 = x1[:, 0, :] # [n*h*w, c]
         x1 = rearrange(x1, '(n h w) c -> n c h w', n=n, h=h, w=w)
         x1 = self.conv_expand(x1) # [n, c, h, w]
-        x1 = F.interpolate(x1, scale_factor=2, mode='bilinear', align_corners=True)
+        x1 = F.interpolate(x1, scale_factor=4, mode='bilinear', align_corners=True)
 
         # ---- Path (Pooling) ----
         x2 = self.TP(outs, seqL, options={"dim": 2})[0]  # [n, c, h, w]
