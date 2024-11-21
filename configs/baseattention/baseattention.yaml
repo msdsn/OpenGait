@@ -21,6 +21,7 @@ evaluator_cfg:
   metric: euc # cos
   transform:
     - type: BaseSilCuttingTransform
+      cutting: 0
 
 loss_cfg:
   - loss_term_weight: 1.0
@@ -111,6 +112,7 @@ trainer_cfg:
     - type: Compose
       trf_cfg:
         - type: BaseSilCuttingTransform
+          cutting: 0
         - type: RandomRotate
           prob: 0.3
         - type: RandomErasing
