@@ -80,11 +80,11 @@ scheduler_cfg:
 trainer_cfg:
   enable_float16: true # half_percesion float for memory reduction and speedup
   fix_BN: false
-  with_test: false
+  with_test: true
   log_iter: 100
   restore_ckpt_strict: true
   restore_hint: 0
-  save_iter: 60000
+  save_iter: 400
   save_name: GaitBase_DA
   sync_BN: true
   total_iter: 60000
