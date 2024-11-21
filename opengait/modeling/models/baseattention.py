@@ -44,6 +44,7 @@ class BaseAttention(BaseModel):
         n, c, s, h, w = outs.size()
         x1 = rearrange(outs, 'n c s h w -> (n s) c h w')
         x1 = self.conv_reduce(x1)
+        n_s, c, h, w = x1.size()
         x1 = rearrange(x1, '(n s) c h w -> (n h w) s c', n=n, s=s)
         batch_class_token = self.class_token.expand(n*h*w, -1, -1)
         x1 = torch.cat((batch_class_token, x1), dim=1)
