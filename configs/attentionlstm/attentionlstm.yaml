@@ -35,7 +35,7 @@ loss_cfg:
     log_accuracy: true
 
 model_cfg:
-  model: ConvLSTM
+  model: AttentionLSTM
   backbone_cfg:
     type: ResNet9
     block: BasicBlock
