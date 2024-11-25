@@ -35,32 +35,7 @@ loss_cfg:
     log_accuracy: true
 
 model_cfg:
-  model: ConvLSTM
-  backbone_cfg:
-    type: ResNet9
-    block: BasicBlock
-    channels: # Layers configuration for automatically model construction
-      - 64
-      - 128
-      - 256
-      - 512
-    layers:
-      - 1
-      - 1
-      - 1
-      - 1
-    strides:
-      - 1
-      - 2
-      - 2
-      - 1
-    maxpool: false
-  SeparateBNNecks:
-    class_num: 74
-    in_channels: 256
-    parts_num: 16
-  bin_num:
-    - 16
+  model: ReelResNet9
 
 optimizer_cfg:
   lr: 0.1

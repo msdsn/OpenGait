@@ -20,9 +20,8 @@ class ConvLSTM(BaseModel):
         self.TP = PackSequenceWrapper(torch.max)
         self.HPP = HorizontalPoolingPyramid(bin_num=model_cfg['bin_num'])
         
-        self.fusion_conv = nn.Conv2d(512+256, 512, kernel_size=1, stride=1, padding=0, bias=False)
-
-        self.FCs = SeparateFCs(**model_cfg['SeparateFCs'])
+        self.fusion_conv = nn.Conv2d(512+256, 256, kernel_size=1, stride=1, padding=0, bias=False)
+        
         self.BNNecks = SeparateBNNecks(**model_cfg['SeparateBNNecks'])
 
     def forward(self, inputs):
@@ -61,14 +60,12 @@ class ConvLSTM(BaseModel):
 
         # Horizontal Pooling Matching, HPM
         feat = self.HPP(outs)  # [n, c, p]
-
-        embed_1 = self.FCs(feat)  # [n, c, p]
-        embed_2, logits = self.BNNecks(embed_1)  # [n, c, p]
-        embed = embed_1
+        embed_2, logits = self.BNNecks(feat)  # [n, c, p]
+        embed = feat
 
         retval = {
             'training_feat': {
-                'triplet': {'embeddings': embed_1, 'labels': labs},
+                'triplet': {'embeddings': feat, 'labels': labs},
                 'softmax': {'logits': logits, 'labels': labs}
             },
             'visual_summary': {
