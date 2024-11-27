@@ -1,7 +1,7 @@
 import torch
 
 from ..base_model import BaseModel
-from ..modules import SetBlockWrapper, HorizontalPoolingPyramid, PackSequenceWrapper, SeparateFCs, SeparateBNNecks
+from ..modules import SetBlockWrapper, HorizontalPoolingPyramid2, PackSequenceWrapper, SeparateFCs, SeparateBNNecks
 
 from einops import rearrange
 
@@ -17,10 +17,10 @@ class PartLSTM(BaseModel):
         self.lstm = nn.LSTM(input_size=512, hidden_size=256, num_layers=1, batch_first=True)
         
         self.TP = PackSequenceWrapper(torch.max)
-        self.HPP = HorizontalPoolingPyramid(bin_num=model_cfg['bin_num'])
+        self.HPP = HorizontalPoolingPyramid2(bin_num=model_cfg['bin_num'])
         
-        self.fusion_conv = nn.Conv2d(512+256, 256, kernel_size=1, stride=1, padding=0, bias=False)
-        
+        self.fusion_conv = nn.Conv1d(512+256, 256, kernel_size=1, stride=1, padding=0, bias=False)
+        self.fusion_bn = nn.BatchNorm1d(256)  # Batch Normalization katmanı eklendi
         self.BNNecks = SeparateBNNecks(**model_cfg['SeparateBNNecks'])
 
     def forward(self, inputs):
@@ -38,11 +38,11 @@ class PartLSTM(BaseModel):
         part = self.HPP(outs)  # [n, c, s, p]
         
         # ---- Path (LSTM) ----
-        n, c, s, p = outs.size()
-        x1 = rearrange(part, 'n c s p -> (n c) s p')
-        x1, _ = self.lstm(x1)  # x: [n*c, s, hidden_size]
-        x1 = x1[:, -1, :]  # [n*c, hidden_size]
-        x1 = rearrange(x1, '(n c) p -> n c p', n=n, p=p)
+        n, c, s, p = part.size()
+        x1 = rearrange(part, 'n c s p -> (n p) s c')
+        x1, _ = self.lstm(x1)  # x: [n*p, s, hidden_size]
+        x1 = x1[:, -1, :]  # [n*p, hidden_size]
+        x1 = rearrange(x1, '(n p) c -> n c p', n=n, p=p)
 
         # ---- Path (Pooling) ----
         x2 = self.TP(part, seqL, options={"dim": 2})[0]  # [n, c, p]
@@ -50,7 +50,7 @@ class PartLSTM(BaseModel):
         # Fusion
         outs = torch.cat((x1, x2), dim=1) # [n, c+hidden_size, p]
         feat = self.fusion_conv(outs)
-
+        feat = self.fusion_bn(feat) 
 
         embed_2, logits = self.BNNecks(feat)  # [n, c, p]
         embed = feat

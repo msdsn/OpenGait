@@ -32,6 +32,32 @@ class HorizontalPoolingPyramid():
         return torch.cat(features, -1)
 
 
+class HorizontalPoolingPyramid2():
+    """
+        Horizontal Pyramid Matching for Person Re-identification
+        Arxiv: https://arxiv.org/abs/1804.05275
+        Github: https://github.com/SHI-Labs/Horizontal-Pyramid-Matching
+    """
+
+    def __init__(self, bin_num=None):
+        if bin_num is None:
+            bin_num = [16, 8, 4, 2, 1]
+        self.bin_num = bin_num
+
+    def __call__(self, x):
+        """
+            x  : [n, c, s, h, w]
+            ret: [n, c, s, p] 
+        """
+        n, c, s = x.size()[:3]
+        features = []
+        for b in self.bin_num:
+            z = x.view(n, c, s, b, -1)
+            z = z.mean(-1) + z.max(-1)[0]
+            features.append(z)
+        return torch.cat(features, -1)
+
+
 class SetBlockWrapper(nn.Module):
     def __init__(self, forward_block):
         super(SetBlockWrapper, self).__init__()
