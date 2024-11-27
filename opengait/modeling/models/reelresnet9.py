@@ -36,7 +36,7 @@ class ReelResNet9(BaseModel):
         flatten = torch.flatten(x, 1)
         logits = self.resnet9.fc(flatten) # n*s, c=75 
         logits = rearrange(logits, '(n s) c -> n c s', n=n, s=s)
-        embed = rearrange(x, '(n s) c -> n c s', n=n, s=s)
+        embed = rearrange(flatten, '(n s) c -> n c s', n=n, s=s)
             
         retval = {
             'training_feat': {
