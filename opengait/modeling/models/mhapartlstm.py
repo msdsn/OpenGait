@@ -54,9 +54,9 @@ class MHAPartLSTM(BaseModel):
         feat = self.fusion_bn(feat) 
         # ---- Multi-Head Attention Uygulama ----
         # feat: [n, 256, p] -> [p, n, 256]
-        feat = feat.permute(2, 0, 1)  # feat: [p, n, 256]
+        feat = feat.permute(2, 0, 1).contiguous()  # feat: [p, n, 256]
         attn_output, attn_weights = self.mha(feat, feat, feat)  # [p, n, 256]
-        feat = attn_output.permute(1, 2, 0)  # [n, 256, p]
+        feat = attn_output.permute(1, 2, 0).contiguous()  # [n, 256, p]
 
         embed_2, logits = self.BNNecks(feat)  # [n, c, p]
         embed = feat
