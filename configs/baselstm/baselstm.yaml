@@ -55,6 +55,10 @@ model_cfg:
       - 2
       - 1
     maxpool: false
+  SeparateFCs:
+    in_channels: 512
+    out_channels: 256
+    parts_num: 16
   SeparateBNNecks:
     class_num: 74
     in_channels: 256
