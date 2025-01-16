@@ -33,6 +33,9 @@ class BaseLSTM(BaseModel):
             sils = rearrange(sils, 'n s c h w -> n c s h w')
 
         del ipts
+        if self.iteration >= 24000:
+            for param in self.Backbone.parameters():
+                param.requires_grad = False
         outs = self.Backbone(sils)  # [n, c, s, h, w]
 
         if self.iteration < 24000:
